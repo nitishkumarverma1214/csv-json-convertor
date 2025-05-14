@@ -11,6 +11,7 @@ export class CsvConverter {
       return this.createNestedObject(headers, rowValues);
     });
     console.log(jsonResult);
+    return jsonResult;
   }
   createNestedObject(headers: string[], values: string[]) {
     const obj: any = {};

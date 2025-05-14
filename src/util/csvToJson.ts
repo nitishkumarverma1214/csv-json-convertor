@@ -10,7 +10,7 @@ export class CsvConverter {
       const rowValues = line.split(",");
       return this.createNestedObject(headers, rowValues);
     });
-    console.log(jsonResult);
+    // console.log(jsonResult);
     return jsonResult;
   }
   createNestedObject(headers: string[], values: string[]) {

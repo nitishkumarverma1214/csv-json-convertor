@@ -1,10 +1,9 @@
 import path from "path";
-import { sequelize } from "./db";
+import { Database } from "./db";
 import { CsvConverter } from "./util/csvToJson";
 import { UserService } from "./service/user.service";
 const execute = async () => {
-  await sequelize.authenticate();
-  await sequelize.sync({ force: true });
+  await Database.connect();
   const csvConverter = new CsvConverter();
   const sheetname = "input.csv";
   const filePath = path.join(__dirname, "../src/data/csv", sheetname);

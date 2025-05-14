@@ -9,12 +9,13 @@ export class UserService {
 
       const { address, name, age: _, ...rest } = user;
 
-      await User.create({
+      const newUser = new User({
         name: fullName,
         age,
-        address: address || null,
+        address,
         additional_info: rest,
       });
+      await newUser.save();
     }
   }
 

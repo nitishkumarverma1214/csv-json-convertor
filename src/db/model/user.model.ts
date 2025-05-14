@@ -1,28 +1,27 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "../index";
+import { Table, Column, Model, DataType } from "sequelize-typescript";
 
-export const User = sequelize.define(
-  "User",
-  {
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    age: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    address: {
-      type: DataTypes.JSONB,
-      allowNull: true,
-    },
-    additional_info: {
-      type: DataTypes.JSONB,
-      allowNull: true,
-    },
-  },
-  {
-    tableName: "users",
-    timestamps: false,
-  }
-);
+interface UserAttributes {
+  id?: number;
+  name: string;
+  age: number;
+  address?: object;
+  additional_info?: object;
+}
+
+@Table({
+  tableName: "users",
+  timestamps: false,
+})
+export class User extends Model<UserAttributes, UserAttributes> {
+  @Column({ type: DataType.STRING, allowNull: false })
+  name!: string;
+
+  @Column({ type: DataType.INTEGER, allowNull: false })
+  age!: number;
+
+  @Column({ type: DataType.JSONB, allowNull: true })
+  address?: object;
+
+  @Column({ type: DataType.JSONB, allowNull: true })
+  additional_info?: object;
+}

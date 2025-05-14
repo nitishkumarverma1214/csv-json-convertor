@@ -15,8 +15,12 @@ export class Database {
   public static async connect(): Promise<Sequelize> {
     if (!this.instance) {
       this.instance = new Sequelize({
-        dialect: "sqlite",
-        storage: "./data/sqlite/database.sqlite",
+        dialect: "postgres",
+        username: dbConfig.username,
+        password: dbConfig.password,
+        host: dbConfig.host,
+        port: dbConfig.port,
+        // storage: "./data/sqlite/database.sqlite",
         models: [User],
         logging: false,
       });

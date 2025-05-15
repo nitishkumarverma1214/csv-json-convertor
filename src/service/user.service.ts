@@ -33,10 +33,16 @@ export class UserService {
         WHEN age >= 40 AND age < 60 THEN '40 to 60'
         ELSE '> 60'
       END AS age_group,
-      COUNT(*) * 100.0 / SUM(COUNT(*)) OVER () AS percentage
+      COUNT(*) * 100.0 / SUM(COUNT(*)) OVER () AS percentage,
+      CASE
+        WHEN age < 20 THEN 1
+        WHEN age >= 20 AND age < 40 THEN 2
+        WHEN age >= 40 AND age < 60 THEN 3
+        ELSE 4
+      END AS sort_order
     FROM users
-    GROUP BY age_group
-    ORDER BY age_group;
+    GROUP BY age_group, sort_order
+    ORDER BY sort_order
     `,
       { type: QueryTypes.SELECT }
     );

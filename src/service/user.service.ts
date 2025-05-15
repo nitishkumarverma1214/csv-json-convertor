@@ -1,5 +1,8 @@
+import { Sequelize } from "sequelize-typescript";
+import { Database } from "../db";
 import { User } from "../db/model/user.model";
 import { InputUser } from "../types/user";
+import { QueryTypes } from "sequelize";
 
 export class UserService {
   async insertUsers(users: InputUser[]) {
@@ -20,30 +23,29 @@ export class UserService {
   }
 
   async printAgeDistributionReport() {
-    const users = await User.findAll({ raw: true });
+    const sequelize = Database.getInstance();
+    const results = await sequelize.query(
+      `
+    SELECT
+      CASE
+        WHEN age < 20 THEN '< 20'
+        WHEN age >= 20 AND age < 40 THEN '20 to 40'
+        WHEN age >= 40 AND age < 60 THEN '40 to 60'
+        ELSE '> 60'
+      END AS age_group,
+      COUNT(*) * 100.0 / SUM(COUNT(*)) OVER () AS percentage
+    FROM users
+    GROUP BY age_group
+    ORDER BY age_group;
+    `,
+      { type: QueryTypes.SELECT }
+    );
 
-    const groups = {
-      "< 20": 0,
-      "20 to 40": 0,
-      "40 to 60": 0,
-      "> 60": 0,
-    };
-
-    for (const user of users) {
-      const { age } = user as any;
-
-      if (age < 20) groups["< 20"] += 1;
-      else if (age <= 40) groups["20 to 40"] += 1;
-      else if (age <= 60) groups["40 to 60"] += 1;
-      else groups["> 60"] += 1;
-    }
-
-    const total = users.length;
-
-    console.log("\nAge-Group      % Distribution");
-    for (const [label, count] of Object.entries(groups)) {
-      const percentage = total === 0 ? 0 : Math.round((count / total) * 100);
-      console.log(label.padEnd(15) + percentage);
-    }
+    console.log("\nAge-Group % Distribution:");
+    (results as any[]).forEach((row) => {
+      console.log(
+        `${row.age_group.padEnd(10)} ${Number(row.percentage).toFixed(2)}%`
+      );
+    });
   }
 }

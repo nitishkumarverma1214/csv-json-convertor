@@ -28,7 +28,7 @@ export class Database {
       try {
         await this.instance.authenticate();
         await this.instance.sync(); // Ensures tables are created
-        console.log("SQLite database connected and synced.");
+        console.log("Database connected and synced.");
       } catch (error) {
         console.error("Failed to connect to database:", error);
         throw error;
